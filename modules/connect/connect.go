@@ -72,14 +72,32 @@ func getDBInfo() string {
 	return psqlInfo
 }
 
-//NewTestConnection returns Postgres connection handle for test environment
-func NewTestConnection() (*gorm.DB, *sql.DB) {
-	host := os.Getenv("HOST")
-	user := os.Getenv("USER")
-	password := os.Getenv("PASSWORD")
 
-	port := os.Getenv("PORT")
-	database := os.Getenv("DATABASE")
+//GormConnection returns Gorm connection handle for either unitary test/regular run
+func GormConnection(test bool) (*gorm.DB, *sql.DB) {
+	var host, user, password, port, database string
+
+	if host, _ = getValue("/royalties_sys/MLCPRC_HOST"); test {
+		host = os.Getenv("HOST")
+	}
+
+	if user, _ = getValue("/royalties_sys/MLCPRC_USER"); test {
+		user = os.Getenv("USER")
+	}
+
+	if password, _ = getValue("/royalties_sys/MLCPRC_PASSWORD"); test {
+		password = os.Getenv("PASSWORD")
+	}
+
+	if port, _ = getValue("/royalties_sys/MLCPRC_PORT"); test {
+		port = os.Getenv("PORT")
+	}
+
+	if database, _ = getValue("/royalties_sys/MLCPRC_DATABASE"); test {
+		database = os.Getenv("DATABASE")
+	}
+
+
 	i, _ := strconv.Atoi(port)
 	dsn := url.URL{
 
