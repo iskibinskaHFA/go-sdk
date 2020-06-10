@@ -8,8 +8,15 @@ import (
 	"time"
 )
 
+func getBytea(db *gorm.DB, uuidString string) []byte {
+	var bytea []byte
+	row := db.Raw("SELECT usage.ordered_bin_uuid('" + uuidString + "') as header").Row()
+	row.Scan(&bytea)
+	return bytea
+}
+
 //Seed is seeding testing environment
-func Seed(db *gorm.DB) {
+func Seed(db *gorm.DB, headerID string, usageSummaryID string) {
 	layout := "2006-01-02"
 	periodStart, _ := time.Parse(layout, "2020-01-01")
 	periodEnd, _ := time.Parse(layout, "2020-03-01")
@@ -17,20 +24,14 @@ func Seed(db *gorm.DB) {
 	fmt.Println(periodStart)
 	fmt.Println(periodEnd)
 
-	uuidws := "361ddee5-66f4-46fb-a725-ce1f5a00788f"
-	var k []byte
-	row := db.Raw("SELECT usage.ordered_bin_uuid('" + uuidws + "') as header").Row()
-	row.Scan(&k)
-
 	db.Create(&Header{
-		HeaderID:       k,
-		SenderHeaderID: "SenderHeaderID",
-		SenderID:       "567",
+		HeaderID:        getBytea(db, headerID),
+		SenderHeaderID: "1008061234",
+		SenderID:       "PADPIDA2008120501W",
 		SenderName:     "Spotify",
 		PeriodStart:    periodStart,
 		PeriodEnd:      periodEnd,
 	})
-
 
 	rateFormulaCRB := getCRBFormula()
 	rateFormulaDownload := getDownloadFormula()
@@ -57,7 +58,7 @@ func Seed(db *gorm.DB) {
 	})
 
 	createRateDefinitions(db)
-	createUsageSummary(db)
+	createUsageSummary(db, headerID, usageSummaryID)
 	createStepLogsDefinitions(db)
 }
 
@@ -93,7 +94,7 @@ func getCRBFormula() json.RawMessage {
 	`)
 }
 
-func createUsageSummary(db *gorm.DB) {
+func createUsageSummary(db *gorm.DB, headerID  string, usageSummaryID string) {
 	metadata := json.RawMessage(`
 	{
 	 "Net_service_revenue": 28062169.22,
@@ -105,9 +106,9 @@ func createUsageSummary(db *gorm.DB) {
 	}`)
 
 	db.Create(&UsageSummary{
-		UsageSummaryID: []byte("123"),
+		UsageSummaryID: getBytea(db, usageSummaryID),
 		ServiceID:      "1",
-		HeaderID:       []byte("123"),
+		HeaderID:       getBytea(db, headerID),
 		SalesData:      postgres.Jsonb{RawMessage: metadata},
 	})
 }
