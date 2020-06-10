@@ -15,9 +15,18 @@ import (
 	"strings"
 )
 
+type dbInfo struct {
+	host string
+	port int
+	user string
+	password string
+	database string
+}
+
+
 //GetDBConnection returns Postgres connection handle
-func GetDBConnection() *sql.DB {
-	psqlInfo := getDBInfo()
+func GetDBConnection(test bool) *sql.DB {
+	psqlInfo := getDBInfo(test)
 	fmt.Println(psqlInfo)
 
 	db, err := sql.Open("postgres", psqlInfo)
@@ -58,53 +67,51 @@ func getValue(keyname string) (string, error) {
 	return strings.TrimSpace(aws.StringValue(param.Parameter.Value)), nil
 }
 
-func getDBInfo() string {
-	host, _ := getValue("/royalties_sys/MLCPRC_HOST")
-	password, _ := getValue("/royalties_sys/MLCPRC_PASSWORD")
-	user, _ := getValue("/royalties_sys/MLCPRC_USER")
-	ports, _ := getValue("/royalties_sys/MLCPRC_PORT")
-	database, _ := getValue("/royalties_sys/MLCPRC_DATABASE")
-	port, _ := strconv.Atoi(ports)
+func getDBInfo(test bool) string {
+	dbValues := getDBValues(test)
 
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
-		host, port, user, password, database)
+		dbValues.host, dbValues.port, dbValues.user, dbValues.password, dbValues.database)
 	return psqlInfo
 }
 
+func getDBValues(test bool) *dbInfo {
+	var info dbInfo
+	var port string
 
-//GormConnection returns Gorm connection handle for either unitary test/regular run
-func GormConnection(test bool) (*gorm.DB, *sql.DB) {
-	var host, user, password, port, database string
-
-	if host, _ = getValue("/royalties_sys/MLCPRC_HOST"); test {
-		host = os.Getenv("HOST")
+	if info.host, _ = getValue("/royalties_sys/MLCPRC_HOST"); test {
+		info.host = os.Getenv("HOST")
 	}
 
-	if user, _ = getValue("/royalties_sys/MLCPRC_USER"); test {
-		user = os.Getenv("USER")
+	if info.user, _ = getValue("/royalties_sys/MLCPRC_USER"); test {
+		info.user = os.Getenv("USER")
 	}
 
-	if password, _ = getValue("/royalties_sys/MLCPRC_PASSWORD"); test {
-		password = os.Getenv("PASSWORD")
+	if info.password, _ = getValue("/royalties_sys/MLCPRC_PASSWORD"); test {
+		info.password = os.Getenv("PASSWORD")
 	}
 
 	if port, _ = getValue("/royalties_sys/MLCPRC_PORT"); test {
 		port = os.Getenv("PORT")
 	}
+	info.port, _  = strconv.Atoi(port)
 
-	if database, _ = getValue("/royalties_sys/MLCPRC_DATABASE"); test {
-		database = os.Getenv("DATABASE")
+	if info.database, _ = getValue("/royalties_sys/MLCPRC_DATABASE"); test {
+		info.database = os.Getenv("DATABASE")
 	}
+	return &info
+}
 
 
-	i, _ := strconv.Atoi(port)
+//GormConnection returns Gorm connection handle for either unitary test/regular run
+func GormConnection(test bool) (*gorm.DB, *sql.DB) {
+	dbValues := getDBValues(test)
 	dsn := url.URL{
-
-		User:     url.UserPassword(user, password),
+		User:     url.UserPassword(dbValues.user, dbValues.password),
 		Scheme:   "postgres",
-		Host:     fmt.Sprintf("%s:%d", host, i),
-		Path:     database,
+		Host:     fmt.Sprintf("%s:%d", dbValues.host, dbValues.port),
+		Path:     dbValues.database,
 		RawQuery: (&url.Values{"sslmode": []string{"disable"}}).Encode(),
 	}
 
