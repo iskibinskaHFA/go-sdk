@@ -48,21 +48,50 @@ func Migrate(db *gorm.DB) {
 	db.Model(CalcStepsLog{}).AddForeignKey("log_definition_id", "royalty.calc_steps_log_definitions(log_definition_id)", "CASCADE",
 		"CASCADE")
 
-	ordered_bin_uuid := `
-	create function ordered_bin_uuid(text_uuid text) returns bytea
+	orderedBinUUID(db)
+	unorderedUUID(db)
+
+}
+
+func unorderedUUID(db *gorm.DB) {
+	unorderedUUID := `
+	create function unordered_uuid(encoded_uuid bytea) returns uuid
+	immutable
+	language plpgsql
+	as
+	$$
+	DECLARE
+	uuid TEXT;
+	BEGIN
+	uuid := ordered_hex_uuid(encoded_uuid);
+	RETURN concat_ws('-', substring(uuid FROM 9 FOR 8), substring(uuid FROM 5 FOR 4), substring(uuid FROM 1 FOR 4),
+	substring(uuid FROM 17 FOR 4), substring(uuid FROM 21))::UUID;
+	END ;
+	$$;`
+
+	db.Exec(
+		unorderedUUID)
+}
+
+
+func orderedBinUUID(db *gorm.DB)  {
+	orderedBinUUID := `
+	create function usage.ordered_bin_uuid(text_uuid text) returns bytea
     immutable
     language plpgsql
 	as
+	$$
 	BEGIN
     RETURN pg_catalog.decode(
                   substring(text_uuid FROM 15 FOR 4) || substring(text_uuid FROM 10 FOR 4) ||
                   substring(text_uuid FROM 1 FOR 8) ||
                   substring(text_uuid FROM 20 FOR 4) || substring(text_uuid FROM 25),
                   'hex');
-	END ;`
+	END ;
+	$$;`
+
 
 	db.Exec(
-		ordered_bin_uuid)
-
+		orderedBinUUID)
+	
 }
-
