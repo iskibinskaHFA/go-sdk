@@ -47,7 +47,6 @@ func Migrate(db *gorm.DB) {
 	db.Model(CalcStepsLog{}).AddForeignKey("usage_summary_id", "usage.usage_summaries(usage_summary_id)", "CASCADE", "CASCADE")
 	db.Model(CalcStepsLog{}).AddForeignKey("log_definition_id", "royalty.calc_steps_log_definitions(log_definition_id)", "CASCADE",
 		"CASCADE")
-
 	orderedBinUUID(db)
 	unorderedUUID(db)
 
@@ -55,7 +54,7 @@ func Migrate(db *gorm.DB) {
 
 func unorderedUUID(db *gorm.DB) {
 	unorderedUUID := `
-	create function unordered_uuid(encoded_uuid bytea) returns uuid
+	create function usage.unordered_uuid(encoded_uuid bytea) returns uuid
 	immutable
 	language plpgsql
 	as
