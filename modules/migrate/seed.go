@@ -17,14 +17,20 @@ func Seed(db *gorm.DB) {
 	fmt.Println(periodStart)
 	fmt.Println(periodEnd)
 
+	uuidws := "361ddee5-66f4-46fb-a725-ce1f5a00788f"
+	var k []byte
+	row := db.Raw("SELECT usage.ordered_bin_uuid('" + uuidws + "') as header").Row()
+	row.Scan(&k)
+
 	db.Create(&Header{
-		HeaderID:       []byte("123"),
+		HeaderID:       k,
 		SenderHeaderID: "SenderHeaderID",
 		SenderID:       "567",
 		SenderName:     "Spotify",
 		PeriodStart:    periodStart,
 		PeriodEnd:      periodEnd,
 	})
+
 
 	rateFormulaCRB := getCRBFormula()
 	rateFormulaDownload := getDownloadFormula()
