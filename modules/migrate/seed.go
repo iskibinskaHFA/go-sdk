@@ -15,8 +15,15 @@ func getBytea(db *gorm.DB, uuidString string) []byte {
 	return bytea
 }
 
+type seederValues struct {
+	headerID       string
+	usageSummaryId string
+	resourceId     string
+}
+
+
 //Seed is seeding testing environment
-func Seed(db *gorm.DB, headerID string, usageSummaryID string) {
+func Seed(db *gorm.DB, values seederValues) {
 	layout := "2006-01-02"
 	periodStart, _ := time.Parse(layout, "2020-01-01")
 	periodEnd, _ := time.Parse(layout, "2020-03-01")
@@ -25,7 +32,7 @@ func Seed(db *gorm.DB, headerID string, usageSummaryID string) {
 	fmt.Println(periodEnd)
 
 	db.Create(&Header{
-		HeaderID:        getBytea(db, headerID),
+		HeaderID:        getBytea(db, values.headerID),
 		SenderHeaderID: "1008061234",
 		SenderID:       "PADPIDA2008120501W",
 		SenderName:     "Spotify",
@@ -58,7 +65,7 @@ func Seed(db *gorm.DB, headerID string, usageSummaryID string) {
 	})
 
 	createRateDefinitions(db)
-	createUsageSummary(db, headerID, usageSummaryID)
+	createUsageSummary(db, values.headerID, values.usageSummaryId)
 	createStepLogsDefinitions(db)
 }
 
