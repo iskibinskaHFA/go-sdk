@@ -3,6 +3,7 @@ package migrate
 import (
 	"github.com/jinzhu/gorm/dialects/postgres"
 	uuid "github.com/satori/go.uuid"
+	"math/big"
 	"time"
 )
 
@@ -139,12 +140,11 @@ type Writer struct {
 // Resource is gorm model for usage.resources
 type Resource struct {
 	ResourceID               []byte    `gorm:"primary_key" json:"resource_id"`
-	ResourceUUID             uuid.UUID `json:"resource_uuid; default:uuid_generate_v4()"`
 	SenderResourceID         string    `json:"sender_resource_id"`
 	OriginID                 []byte    `json:"origin_id"`
 	WorkID                   []byte    `json:"work_id"`
+	ProcessingStatusId		 big.Int   `json:"processing_status_id"`
 	HfaSongCode              string    `json:"hfa_song_code"`
-	ReleaseID                []byte    `json:"release_id"`
 	ServerFixationDate       time.Time `json:"server_fixation_date"`
 	Title                    string    `json:"title"`
 	Artist                   string    `json:"artist"`
