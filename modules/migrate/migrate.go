@@ -47,5 +47,22 @@ func Migrate(db *gorm.DB) {
 	db.Model(CalcStepsLog{}).AddForeignKey("usage_summary_id", "usage.usage_summaries(usage_summary_id)", "CASCADE", "CASCADE")
 	db.Model(CalcStepsLog{}).AddForeignKey("log_definition_id", "royalty.calc_steps_log_definitions(log_definition_id)", "CASCADE",
 		"CASCADE")
+
+	ordered_bin_uuid := `
+	create function ordered_bin_uuid(text_uuid text) returns bytea
+    immutable
+    language plpgsql
+	as
+	BEGIN
+    RETURN pg_catalog.decode(
+                  substring(text_uuid FROM 15 FOR 4) || substring(text_uuid FROM 10 FOR 4) ||
+                  substring(text_uuid FROM 1 FOR 8) ||
+                  substring(text_uuid FROM 20 FOR 4) || substring(text_uuid FROM 25),
+                  'hex');
+	END ;`
+
+	db.Exec(
+		ordered_bin_uuid)
+
 }
 
