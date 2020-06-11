@@ -3,6 +3,7 @@ package migrate
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"time"
@@ -71,10 +72,20 @@ func Seed(db *gorm.DB, values SeederValues) {
 }
 
 func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
+
+	WorkIDText, _ := (uuid.New()).MarshalText()
+
+	db.Create(&Work{
+		WorkID: getBytea(db, string(WorkIDText)),
+		SenderWorkID: "SenderWorkId",
+	})
+
+
 	db.Create(&Resource{
 	ResourceID: getBytea(db, ResourceIDText),
 	HfaSongCode: "B2359G",
 	OriginID: getBytea(db, HeaderIDText),
+	WorkID: getBytea(db, string(WorkIDText)),
 	PlayMinutes: 4,
 	PlaySeconds: 2,
 	DurationAdjustmentFactor: 1,

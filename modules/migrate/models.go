@@ -121,7 +121,6 @@ type Release struct {
 // Work is gorm model for usage.works
 type Work struct {
 	WorkID       []byte    `gorm:"primary_key" json:"work_id"`
-	WorkUUID     uuid.UUID `json:"work_uuid; default:uuid_generate_v4()"`
 	SenderWorkID string    `json:"sender_work_id"`
 	Iswc         string    `json:"iswc"`
 	*royModel
