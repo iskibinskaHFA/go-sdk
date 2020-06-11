@@ -72,7 +72,7 @@ func Seed(db *gorm.DB, values SeederValues) {
 	})
 
 	createRateDefinitions(db)
-	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIdText)
+	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIDText)
 	createStepLogsDefinitions(db)
 	createResource(db, values.HeaderIDText, values.ResourceIDText)
 }
