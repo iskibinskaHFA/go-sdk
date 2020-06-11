@@ -67,13 +67,14 @@ func Seed(db *gorm.DB, values SeederValues) {
 	createRateDefinitions(db)
 	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIdText)
 	createStepLogsDefinitions(db)
-	createResource(db, values.ResourceIdText)
+	createResource(db, values.HeaderIDText, values.ResourceIdText)
 }
 
-func createResource(db *gorm.DB, ResourceIDText string) {
+func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
 	db.Create(&Resource{
 	ResourceID: getBytea(db, ResourceIDText),
 	HfaSongCode: "B2359G",
+	OriginID: getBytea(db, HeaderIDText),
 	PlayMinutes: 4,
 	PlaySeconds: 2,
 	DurationAdjustmentFactor: 1,
