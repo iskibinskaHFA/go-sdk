@@ -142,7 +142,7 @@ type Resource struct {
 	SenderResourceID         string    `json:"sender_resource_id"`
 	OriginID                 []byte    `json:"origin_id"`
 	WorkID                   []byte    `json:"work_id"`
-	ProcessingStatusId		 big.Int   `json:"processing_status_id"`
+	ProcessingStatusID		 big.Int   `json:"processing_status_id"`
 	HfaSongCode              string    `json:"hfa_song_code"`
 	ServerFixationDate       time.Time `json:"server_fixation_date"`
 	Title                    string    `json:"title"`

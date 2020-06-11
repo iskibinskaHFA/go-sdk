@@ -8,25 +8,25 @@ import (
 	"time"
 )
 
-// GetByteaFromUUIDTextFromUUIDText returns bytea from text representation of UUID
+// GetByteaFromUUIDText returns bytea from text representation of UUID
 func GetByteaFromUUIDText(db *gorm.DB, uuidString string) []byte {
 	var bytea []byte
 	db.Raw("SELECT usage.ordered_bin_uuid('" + uuidString + "') as header").Row().Scan(&bytea)
 	return bytea
 }
 
-//GetByteaFromUUIDTextFromBase64 returns bytea from base64 encoded
+//GetByteaFromBase64 returns bytea from base64 encoded
 func GetByteaFromBase64(db *gorm.DB, base64 string) []byte {
 	var bytea []byte
 	db.Raw("SELECT usage.unordered_uuid((decode('" + base64 + "', 'base64') :: bytea").Row().Scan(&bytea)
 	return bytea
 }
 
-// Seeder values is a structure passed from a test suite with values to be seeded
+// SeederValues is a structure passed from a test suite with values to be seeded
 type SeederValues struct {
 	HeaderIDText       string
-	UsageSummaryIdText string
-	ResourceIdText     string
+	UsageSummaryIDText string
+	ResourceIDText     string
 }
 
 //Seed is seeding testing environment
@@ -74,7 +74,7 @@ func Seed(db *gorm.DB, values SeederValues) {
 	createRateDefinitions(db)
 	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIdText)
 	createStepLogsDefinitions(db)
-	createResource(db, values.HeaderIDText, values.ResourceIdText)
+	createResource(db, values.HeaderIDText, values.ResourceIDText)
 }
 
 func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
