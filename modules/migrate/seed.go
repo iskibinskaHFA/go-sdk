@@ -1,5 +1,4 @@
 package migrate
-
 import (
 	"encoding/json"
 	"fmt"
@@ -9,10 +8,17 @@ import (
 	"time"
 )
 
-func getBytea(db *gorm.DB, uuidString string) []byte {
+// GetByteaFromUUIDTextFromUUIDText returns bytea from text representation of UUID
+func GetByteaFromUUIDText(db *gorm.DB, uuidString string) []byte {
 	var bytea []byte
-	row := db.Raw("SELECT usage.ordered_bin_uuid('" + uuidString + "') as header").Row()
-	row.Scan(&bytea)
+	db.Raw("SELECT usage.ordered_bin_uuid('" + uuidString + "') as header").Row().Scan(&bytea)
+	return bytea
+}
+
+//GetByteaFromUUIDTextFromBase64 returns bytea from base64 encoded
+func GetByteaFromBase64(db *gorm.DB, base64 string) []byte {
+	var bytea []byte
+	db.Raw("SELECT usage.unordered_uuid((decode('" + base64 + "', 'base64') :: bytea").Row().Scan(&bytea)
 	return bytea
 }
 
@@ -33,7 +39,7 @@ func Seed(db *gorm.DB, values SeederValues) {
 	fmt.Println(periodEnd)
 
 	db.Create(&Header{
-		HeaderID:        getBytea(db, values.HeaderIDText),
+		HeaderID:        GetByteaFromUUIDText(db, values.HeaderIDText),
 		SenderHeaderID: "1008061234",
 		SenderID:       "PADPIDA2008120501W",
 		SenderName:     "Spotify",
@@ -72,20 +78,18 @@ func Seed(db *gorm.DB, values SeederValues) {
 }
 
 func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
-
 	WorkIDText, _ := (uuid.New()).MarshalText()
 
 	db.Create(&Work{
-		WorkID: getBytea(db, string(WorkIDText)),
+		WorkID: GetByteaFromUUIDText(db, string(WorkIDText)),
 		SenderWorkID: "SenderWorkId",
 	})
 
-
 	db.Create(&Resource{
-	ResourceID: getBytea(db, ResourceIDText),
+	ResourceID: GetByteaFromUUIDText(db, ResourceIDText),
 	HfaSongCode: "B2359G",
-	OriginID: getBytea(db, HeaderIDText),
-	WorkID: getBytea(db, string(WorkIDText)),
+	OriginID: GetByteaFromUUIDText(db, HeaderIDText),
+	WorkID: GetByteaFromUUIDText(db, string(WorkIDText)),
 	PlayMinutes: 4,
 	PlaySeconds: 2,
 	DurationAdjustmentFactor: 1,
@@ -136,9 +140,9 @@ func createUsageSummary(db *gorm.DB, headerID  string, usageSummaryID string) {
 	}`)
 
 	db.Create(&UsageSummary{
-		UsageSummaryID: getBytea(db, usageSummaryID),
+		UsageSummaryID: GetByteaFromUUIDText(db, usageSummaryID),
 		ServiceID:      "1",
-		HeaderID:       getBytea(db, headerID),
+		HeaderID:       GetByteaFromUUIDText(db, headerID),
 		SalesData:      postgres.Jsonb{RawMessage: metadata},
 	})
 }
