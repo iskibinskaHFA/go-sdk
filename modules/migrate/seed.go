@@ -109,7 +109,6 @@ func CreateResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
 	OriginID: GetByteaFromUUIDText(db, HeaderIDText),
 	WorkID: GetByteaFromUUIDText(db, string(WorkIDText)),
 	DurationAdjustmentFactor: dafs[n],
-
 	})
 }
 
