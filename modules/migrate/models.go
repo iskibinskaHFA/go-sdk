@@ -28,6 +28,15 @@ type UsageSummary struct {
 	SalesData            postgres.Jsonb `json:"sales_data"`
 	*royModel
 }
+type Usages struct {
+	UsageID       	 []byte         `gorm:"primary_key" json:"usage_id"`
+	HeaderID	  	 []byte		 	`json:"sender_usage_summary_id"`
+	ResourceID   	 []byte		 	`json: "resource_id"`
+	Units			 big.Int		`json: "units"`
+	*royModel
+}
+
+
 //Revenue structure is a helper structure for base rate calculation
 type Revenue struct {
 	SubscriberCount      int64   `json: "subscriber_count"`

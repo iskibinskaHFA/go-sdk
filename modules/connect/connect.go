@@ -147,6 +147,8 @@ func defineHandler(*gorm.DB) {
 			fallthrough
 		case "works_writer":
 			fallthrough
+		case "usages":
+			fallthrough
 		case "writers":
 			return "usage." + defaultTableName
 		}

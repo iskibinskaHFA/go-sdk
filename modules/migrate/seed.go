@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/jinzhu/gorm/dialects/postgres"
 	"time"
+	"math/rand"
 )
 
 // GetByteaFromUUIDText returns bytea from text representation of UUID
@@ -74,10 +75,11 @@ func Seed(db *gorm.DB, values SeederValues) {
 	createRateDefinitions(db)
 	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIDText)
 	createStepLogsDefinitions(db)
-	createResource(db, values.HeaderIDText, values.ResourceIDText)
+	CreateResource(db, values.HeaderIDText, values.ResourceIDText)
 }
 
-func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
+//CreateResource is creating resources
+func CreateResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
 	WorkIDText, _ := (uuid.New()).MarshalText()
 
 	db.Create(&Work{
@@ -85,14 +87,28 @@ func createResource(db *gorm.DB, HeaderIDText, ResourceIDText string) {
 		SenderWorkID: "SenderWorkId",
 	})
 
+	songs := [4]string{
+		"B2359G",
+		"D4880D",
+		"S17873",
+		"L2070E",
+	}
+
+	dafs := [4]float64 {
+		1.2,
+		1.0,
+		1.4,
+		2.0,
+	}
+
+	n := rand.Int() % len(songs)
+
 	db.Create(&Resource{
 	ResourceID: GetByteaFromUUIDText(db, ResourceIDText),
-	HfaSongCode: "B2359G",
+	HfaSongCode: songs[n],
 	OriginID: GetByteaFromUUIDText(db, HeaderIDText),
 	WorkID: GetByteaFromUUIDText(db, string(WorkIDText)),
-	PlayMinutes: 4,
-	PlaySeconds: 2,
-	DurationAdjustmentFactor: 1,
+	DurationAdjustmentFactor: dafs[n],
 	})
 }
 
