@@ -32,8 +32,9 @@ type Usages struct {
 	UsageID       	 			[]byte         `gorm:"primary_key" json:"usage_id"`
 	HeaderID	  	 			[]byte		 	`json:"sender_usage_summary_id"`
 	ResourceID   	 			[]byte		 	`json: "resource_id"`
-	Units			 			int64		`json: "units"`
-	DurationAdjustmentFactor	float64   `json:"duration_adjustment_factor"`
+	Units			 			int64			`json: "units"`
+	DurationAdjustmentFactor	float64  	 	`json:"duration_adjustment_factor"`
+	AdjustedUnits				float64			`json:"adjusted_units"`
 	*royModel
 }
 
