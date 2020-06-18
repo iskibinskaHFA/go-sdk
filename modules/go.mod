@@ -1,4 +1,4 @@
-module github.com/iskibinskaHFA/my-go-sdk/modules
+module github.com/iskibinskaHFA/go-sdk/modules
 
 go 1.14
 
