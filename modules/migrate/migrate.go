@@ -47,9 +47,10 @@ func Migrate(db *gorm.DB) {
 	db.Model(CalcStepsLog{}).AddForeignKey("usage_summary_id", "usage.usage_summaries(usage_summary_id)", "CASCADE", "CASCADE")
 	db.Model(CalcStepsLog{}).AddForeignKey("log_definition_id", "royalty.calc_steps_log_definitions(log_definition_id)", "CASCADE",
 		"CASCADE")
+	orderedHexUUID(db)
 	orderedBinUUID(db)
 	unorderedUUID(db)
-	orderedHexUUID(db)
+
 
 }
 
