@@ -15,21 +15,18 @@ func GetByteaFromUUIDText(db *gorm.DB, uuidString string) []byte {
 	db.Raw("SELECT usage.ordered_bin_uuid('" + uuidString + "') as header").Row().Scan(&bytea)
 	return bytea
 }
-
 //GetByteaFromBase64 returns bytea from base64 encoded
 func GetByteaFromBase64(db *gorm.DB, base64 string) []byte {
 	var bytea []byte
 	db.Raw("SELECT usage.unordered_uuid((decode('" + base64 + "', 'base64') :: bytea").Row().Scan(&bytea)
 	return bytea
 }
-
 // SeederValues is a structure passed from a test suite with values to be seeded
 type SeederValues struct {
 	HeaderIDText       string
 	UsageSummaryIDText string
 	ResourceIDText     string
 }
-
 //Seed is seeding testing environment
 func Seed(db *gorm.DB, values SeederValues) {
 	layout := "2006-01-02"
@@ -51,9 +48,7 @@ func Seed(db *gorm.DB, values SeederValues) {
 	rateFormulaCRB := getCRBFormula()
 	rateFormulaDownload := getDownloadFormula()
 	rateFormulaRingTone := getRingtoneFormula()
-
 	createServices(db)
-
 	// relations not working for postgres ?
 	rf := RateFormula{
 		RateFormulaID: 1,
