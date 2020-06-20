@@ -49,8 +49,26 @@ func Migrate(db *gorm.DB) {
 		"CASCADE")
 	orderedBinUUID(db)
 	unorderedUUID(db)
+	orderedHexUUID(db)
 
 }
+
+func orderedHexUUID(db *gorm.DB) {
+	orderedHexUUID := `
+		create function usage.ordered_hex_uuid(uuid bytea) returns text
+        immutable
+    	language plpgsql
+		as
+		$$
+		BEGIN
+    		RETURN pg_catalog.encode(uuid, 'hex');
+		END ;
+		$$;`
+
+	db.Exec(
+		orderedHexUUID)
+}
+
 
 func unorderedUUID(db *gorm.DB) {
 	unorderedUUID := `
@@ -72,21 +90,7 @@ func unorderedUUID(db *gorm.DB) {
 		unorderedUUID)
 }
 
-func orderedHexUUID(db *gorm.DB) {
-	orderedHexUUID := `
-		create function usage.ordered_hex_uuid(uuid bytea) returns text
-        immutable
-    	language plpgsql
-		as
-		$$
-		BEGIN
-    		RETURN pg_catalog.encode(uuid, 'hex');
-		END ;
-		$$;`
 
-	db.Exec(
-		orderedHexUUID)
-}
 
 func orderedBinUUID(db *gorm.DB) {
 	orderedBinUUID := `
