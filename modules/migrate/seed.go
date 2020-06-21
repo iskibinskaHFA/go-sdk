@@ -126,13 +126,13 @@ func getDownloadFormula() json.RawMessage {
 func getCRBFormula() json.RawMessage {
 	return json.RawMessage(`
 		{
-			"1.recordLabelCost":  						   "Label_content_cost * {{.record}}",
-	 		"2.subscriber": 				  	    		 "{{.subscriber}} * Subscriber_count",
+			"1.recordLabelCost":  						   "LabelContentCost * {{.record}}",
+	 		"2.subscriber": 				  	    		 "{{.subscriber}} * SubscriberCount",
 			"3.lesserOfLabelCostAndSubscriber": 		 	 "min(recordLabelCost, maxIfZero(subscriber))",
-			"4.musicServiceRevenue":						 "{{.rev}} * Net_service_revenue",
+			"4.musicServiceRevenue":						 "{{.rev}} * NetServiceRevenue",
 		    "5.allInOneRoyalty":		  					 "max(musicServiceRevenue, lesserOfLabelCostAndSubscriber)",
-			"6.mechanicalRoyalty":					     "allInOneRoyalty - Performance_royalties",
-			"7.adjustedSubscriberCount":						"{{.floor}} * Subscriber_count",
+			"6.mechanicalRoyalty":					     "allInOneRoyalty - PerformanceRoyalties",
+			"7.adjustedSubscriberCount":						"{{.floor}} * SubscriberCount",
     	    "8.payableRoyalty":							 "max(mechanicalRoyalty, adjustedSubscriberCount)",
 			"9.rate":									  	 "payableRoyalty/AdjustedUnitsTotal"
 		}
