@@ -5,8 +5,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/jinzhu/gorm/dialects/postgres"
-	"time"
 	"math/rand"
+	"time"
 )
 
 // GetByteaFromUUIDText returns bytea from text representation of UUID
@@ -142,10 +142,10 @@ func getCRBFormula() json.RawMessage {
 func createUsageSummary(db *gorm.DB, headerID  string, usageSummaryID string) {
 	metadata := json.RawMessage(`
 	{
-	 "Net_service_revenue": 28062169.22,
-	 "Subscriber_count": 23314946,
-	 "Label_content_cost": 13722127.14,
-	 "Performance_royalties": 1717547.37,
+	 "NetServiceRevenue": 28062169.22,
+	 "SubscriberCount": 23314946,
+	 "LabelContentCost": 13722127.14,
+	 "PerformanceRoyalties": 1717547.37,
 	 "AdjustedUnitsTotal":	8291.12
 
 	}`)
