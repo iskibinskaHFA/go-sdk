@@ -81,7 +81,7 @@ func unorderedUUID(db *gorm.DB) {
 	DECLARE
 	uuid TEXT;
 	BEGIN
-	uuid := ordered_hex_uuid(encoded_uuid);
+	uuid := usage.ordered_hex_uuid(encoded_uuid);
 	RETURN concat_ws('-', substring(uuid FROM 9 FOR 8), substring(uuid FROM 5 FOR 4), substring(uuid FROM 1 FOR 4),
 	substring(uuid FROM 17 FOR 4), substring(uuid FROM 21))::UUID;
 	END ;
