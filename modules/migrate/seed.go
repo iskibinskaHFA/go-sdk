@@ -68,7 +68,7 @@ func Seed(db *gorm.DB, values SeederValues) {
 	})
 
 	createRateDefinitions(db)
-	createUsageSummary(db, values.HeaderIDText, values.UsageSummaryIDText)
+	CreateUsageSummary(db, values.HeaderIDText, values.UsageSummaryIDText)
 	createStepLogsDefinitions(db)
 	CreateResource(db, values.HeaderIDText, values.ResourceIDText)
 }
@@ -139,7 +139,8 @@ func getCRBFormula() json.RawMessage {
 	`)
 }
 
-func createUsageSummary(db *gorm.DB, headerID  string, usageSummaryID string) {
+//CreateUsageSummary is creating usage summary
+func CreateUsageSummary(db *gorm.DB, headerID  string, usageSummaryID string) {
 	metadata := json.RawMessage(`
 	{
 	 "NetServiceRevenue": 28062169.22,

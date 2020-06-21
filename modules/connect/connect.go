@@ -80,25 +80,25 @@ func getDBValues(test bool) *dbInfo {
 	var info dbInfo
 	var port string
 
-	if info.host, _ = getValue("/royalties_sys/MLC_HOST"); test {
-		info.host = os.Getenv("HOST")
+	if info.host = os.Getenv("HOST"); !test {
+		info.host, _ = getValue("/royalties_sys/MLC_HOST")
 	}
 
-	if info.user, _ = getValue("/royalties_sys/MLC_USER"); test {
-		info.user = os.Getenv("USER")
+	if info.user = os.Getenv("USER"); !test {
+		info.user, _ = getValue("/royalties_sys/MLC_USER")
 	}
 
-	if info.password, _ = getValue("/royalties_sys/MLC_PASSWORD"); test {
-		info.password = os.Getenv("PASSWORD")
+	if info.password = os.Getenv("PASSWORD"); !test {
+		info.password, _ = getValue("/royalties_sys/MLC_PASSWORD")
 	}
 
-	if port, _ = getValue("/royalties_sys/MLC_PORT"); test {
-		port = os.Getenv("PORT")
+	if port = os.Getenv("PORT"); !test {
+		port, _ = getValue("/royalties_sys/MLC_PORT")
 	}
 	info.port, _  = strconv.Atoi(port)
 
-	if info.database, _ = getValue("/royalties_sys/MLC_DATABASE"); test {
-		info.database = os.Getenv("DATABASE")
+	if  info.database = os.Getenv("DATABASE"); !test {
+		info.database, _ = getValue("/royalties_sys/MLC_DATABASE");
 	}
 	return &info
 }
